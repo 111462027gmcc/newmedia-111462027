@@ -65,7 +65,7 @@ export default function Home() {
 
       {/* 主視覺區 */}
       <header className="max-w-5xl mx-auto py-20 px-4">
-        <h1 className="text-5xl font-bold mb-4 text-black">Hello ! 這裡是 <span className="text-blue-600">由汐 Yuxi / 明蝶</span></h1>
+        <h1 className="text-5xl font-bold mb-4 text-black">Hello ! 這裡是 <span className="text-blue-600">由汐Yuxi / 明蝶</span></h1>
         <p className="text-xl text-gray-600 mb-8">歡迎來到我的個人網站，很高興認識你 ~</p>
         <div className="flex gap-4">
           <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">技術說明</button>
