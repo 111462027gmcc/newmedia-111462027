@@ -1,5 +1,5 @@
 {
-  "name": "my-portfolio",
+  "name": "newmedia-111462027",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint"
   },
+  
   "dependencies": {
     "@clerk/nextjs": "^7.0.11",
     "bcryptjs": "^3.0.3",
