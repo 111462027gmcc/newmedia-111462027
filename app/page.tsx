@@ -21,8 +21,8 @@ export default function Home() {
       {/* 導覽列 */}
       <nav className="bg-white shadow-sm p-4 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto flex justify-between items-center">
-          {/* 左側：Logo */}
-          <span className="text-xl font-bold text-blue-600 cursor-pointer">Yuxi's Profile</span>
+          {/* 左側：Logo (修正單引號) */}
+          <span className="text-xl font-bold text-blue-600 cursor-pointer">Yuxi&apos;s Profile</span>
           
           {/* 右側：所有的選單與按鈕 */}
           <div className="flex items-center space-x-8">
@@ -63,7 +63,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* 主視覺區 */}
+      {/* 主視覺區 (修正單引號) */}
       <header className="max-w-5xl mx-auto py-20 px-4">
         <h1 className="text-5xl font-bold mb-4 text-black">Hello ! 這裡是 <span className="text-blue-600">Yuxi / 明蝶</span></h1>
         <p className="text-xl text-gray-600 mb-8">歡迎來到我的個人網站，很高興認識你 ~</p>
@@ -83,17 +83,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 作品展示區暫存位 */}
-      
-      
       {/* 作品展示區 */}
       <section id="projects" className="max-w-5xl mx-auto py-12 px-4 border-t scroll-mt-20">
         <h2 className="text-2xl font-bold mb-8 text-black">精選專案</h2>
 
         <div className="grid md:grid-cols-2 gap-6">
           
-          {/* 1. 原有的全端網頁專案 */}
-          <Link href="/projects/my-first-app">
+          {/* 1. 全端網頁專案 (修正：因為沒有該路由，暫時改成首頁錨點或空連結，避免編譯失敗) */}
+          <Link href="#">
             <div className="bg-white p-6 rounded-xl shadow-md border hover:shadow-2xl hover:border-blue-300 transition-all cursor-pointer group">
               <div className="w-full h-40 bg-slate-100 rounded-md mb-4 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 transition">
                 專案圖片預留
@@ -104,9 +101,9 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* 2. 繪畫作品：根據權限顯示不同內容 */}
+          {/* 2. 繪畫作品：根據你的專案結構圖，正確對應到 /project/my-gallery */}
           {canAccessArt ? (
-            <Link href="/projects/my-gallery">
+            <Link href="/project/my-gallery">
               <div className="bg-white p-6 rounded-xl shadow-md border border-blue-200 bg-blue-50/30 hover:shadow-2xl transition-all cursor-pointer group h-full">
                 <div className="w-full h-40 bg-blue-100 rounded-md mb-4 flex items-center justify-center text-blue-400">
                   🎨 進入私人畫廊
@@ -126,33 +123,33 @@ export default function Home() {
           )}
         </div>
       </section>
-    <section id="contact" className="max-w-md mx-auto py-20 px-4 text-center">
-      <h2 className="text-3xl font-bold mb-6 text-black">聯絡我</h2>
-      {/* 使用 Web3Forms 服務，這不需要密碼，只需一個 Access Key */}
-      <form action="https://api.web3forms.com/submit" method="POST" className="space-y-4 text-left">
-      {/* 請到 https://web3forms.com/ 申請免費 Key 並貼在這裡 */}
-    <input type="hidden" name="access_key" value="abce0b1a-895b-44ed-88af-013c8c2166ca" />
-    
-      <div>
-        <label className="block text-sm font-medium text-gray-700">你的姓名</label>
-        <input type="text" name="name" required className="w-full border rounded-lg p-2 mt-1 text-black focus:ring-blue-500 focus:border-blue-500" />
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700">你的信箱</label>
-        <input type="email" name="email" required className="w-full border rounded-lg p-2 mt-1 text-black" />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">想對我說的話</label>
-        <textarea name="message" rows={4} required className="w-full border rounded-lg p-2 mt-1 text-black"></textarea>
-      </div>
+      {/* 聯絡我表單區 */}
+      <section id="contact" className="max-w-md mx-auto py-20 px-4 text-center">
+        <h2 className="text-3xl font-bold mb-6 text-black">聯絡我</h2>
+        <form action="https://api.web3forms.com/submit" method="POST" className="space-y-4 text-left">
+          <input type="hidden" name="access_key" value="abce0b1a-895b-44ed-88af-013c8c2166ca" />
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">你的姓名</label>
+            <input type="text" name="name" required className="w-full border rounded-lg p-2 mt-1 text-black focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">你的信箱</label>
+            <input type="email" name="email" required className="w-full border rounded-lg p-2 mt-1 text-black" />
+          </div>
 
-      <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
-        傳送訊息
-      </button>
-    </form>
-    </section>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">想對我說的話</label>
+            <textarea name="message" rows={4} required className="w-full border rounded-lg p-2 mt-1 text-black"></textarea>
+          </div>
+
+          <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+            傳送訊息
+          </button>
+        </form>
+      </section>
       
     </div>
   );
