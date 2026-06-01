@@ -78,14 +78,11 @@ export default function Home() {
           </div>
           
           <h1 className="text-4xl sm:text-5xl font-black mb-6 tracking-tight text-white leading-tight">
-            Hello ! &nbsp; 
-            {/* 加上 tracking-widest 讓「這裡是」字距變寬 */}
-            <span className="tracking-widest">這裡是</span> <br className="sm:hidden" />
-            {/* 加上 tracking-widest 讓「明蝶」字距變寬，並維持原本的漸層發光特效 */}
-            <span className="inline-block tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-400 drop-shadow-sm">
-              明蝶
+            Hello ! &nbsp; 這裡是 <br className="sm:hidden" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-400 drop-shadow-sm">
+              MinDieh
             </span>
-          </h1>
+          </h1> 
           <p className="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed font-light">
             歡迎來到我的數位觀測站。這裡記錄了我關於互動程式、多媒體感測、以及全端網頁的開發軌跡。很高興認識你。
           </p>
