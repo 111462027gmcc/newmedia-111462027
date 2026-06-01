@@ -6,7 +6,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: '由汐 Yuxi | 個人作品集',
+  title: 'MINDIEH | 個人作品集',
   description: '全端開發者作品展示',
 }
 
