@@ -28,6 +28,18 @@ export default function GalleryPage() {
           <img src="/art1.png" alt="作品1" className="w-full h-auto" />
         </div>
         {/* ...更多作品 */}
+        {/* 新增的影片作品 */}
+        <div className="rounded-lg overflow-hidden shadow-lg bg-black flex items-center">
+          <video 
+            src="C:\Users\周明蝶\my-portfolio\public\周明蝶_生命長廊.mp4"       //{ 你的影片路徑，記得放在 public 資料夾下 */}
+            controls                   //{/* 顯示播放、暫停、音量等控制列 */}
+            muted                      //{/* 靜音（現代瀏覽器通常要求靜音才能自動播放） */}
+            playsInline                //{/* 在 iOS 裝置上不會強制全螢幕播放 */}
+            className="w-full h-auto"
+          >
+            您的瀏覽器不支援影片播放。
+          </video>
+        </div>
       </div>
     </div>
   );
