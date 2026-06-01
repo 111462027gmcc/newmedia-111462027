@@ -346,7 +346,8 @@ export default function Home() {
 
           {/* 專案二：繪畫收藏區 */}
           {canAccessArt ? (
-            <Link href="/project/my-gallery">
+            <Link href="/project/my-gallery" className="block h-full"> 
+              {/* 💡 加上 className="block h-full" 確保整張卡片都能被點擊，且 Link 能夠正確綁定 */}
               <div
                 ref={cardRefs[1]}
                 onMouseMove={(e) => handleCardMouseMove(e, 1)}
@@ -354,17 +355,17 @@ export default function Home() {
                 onMouseLeave={() => setIsHovered(false)}
                 className="relative bg-[rgba(255,255,255,0.01)] border border-[#ff007f]/30 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
                   hover:-translate-y-1.5 hover:border-[#ff007f] hover:shadow-[0_10px_30px_rgba(255,0,127,0.08)]
-                  before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(255,0,127,0.05),transparent_40%)] flex flex-col h-full"
+                  before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(255,0,127,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
               >
                 <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-purple-950/20 border border-[#ff007f]/20 flex items-center justify-center text-[#ff007f] group-hover:scale-110 transition-transform">
                   <Atom className="w-5 h-5 sm:w-6 sm:h-6 animate-spin-slow" />
                 </div>
-                <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-[#ff007f]">我的繪畫收藏 ( 已解鎖 )</h3>
+                <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">我的繪畫收藏 ( 已解鎖 )</h3>
                 <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
                   憑證安全校驗通過。核心圖形庫已成功加載，歡迎進入查看個人數位電繪、原創概念藝術設計與視覺實驗。
                 </p>
-                <div className="text-[#ff007f] text-[11px] font-mono tracking-widest mt-6">
-                  ACCESS_GRANTED // OPEN_CORE *
+                <div className="text-[#ff007f] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
+                  ACCESS_GRANTED // OPEN_CORE <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
                 </div>
               </div>
             </Link>
