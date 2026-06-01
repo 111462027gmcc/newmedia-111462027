@@ -31,10 +31,10 @@ export default function GalleryPage() {
         {/* 新增的影片作品 */}
         <div className="rounded-lg overflow-hidden shadow-lg bg-black flex items-center">
           <video 
-            src="C:\Users\周明蝶\my-portfolio\public\周明蝶_生命長廊.mp4"       //{ 你的影片路徑，記得放在 public 資料夾下 */}
-            controls                   //{/* 顯示播放、暫停、音量等控制列 */}
-            muted                      //{/* 靜音（現代瀏覽器通常要求靜音才能自動播放） */}
-            playsInline                //{/* 在 iOS 裝置上不會強制全螢幕播放 */}
+            src="/周明蝶_生命長廊.mp4"  //{/* 👈 只要寫這樣就好，前面的 public 不需要寫 */}
+            controls 
+            muted 
+            playsInline 
             className="w-full h-auto"
           >
             您的瀏覽器不支援影片播放。
