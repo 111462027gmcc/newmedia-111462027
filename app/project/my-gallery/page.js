@@ -30,11 +30,7 @@ export default function GalleryPage() {
         <h1 className="text-3xl font-bold mb-10 font-mono tracking-wider text-white">我的私密畫廊 🎨</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* 圖片作品 */}
-          <div className="rounded-lg overflow-hidden shadow-lg border border-white/5 bg-slate-900/40 backdrop-blur-md">
-            <img src="/art1.png" alt="作品1" className="w-full h-auto" />
-          </div>
-
+          
           {/* 影片作品 - 生命長廊 */}
           <div className="rounded-lg overflow-hidden shadow-lg border border-[#ff007f]/30 bg-black flex items-center justify-center aspect-video">
             <video 
