@@ -1,240 +1,458 @@
 "use client"; // 告訴 Next.js 這是一個用戶端組件
 
+import React, { useEffect, useRef, useState } from 'react';
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import Image from 'next/image';
 import Link from 'next/link';
+import { Cpu, Atom, ShieldAlert, ArrowRight } from 'lucide-react';
+
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  color: string;
+  update: () => void;
+  draw: () => void;
+}
 
 export default function Home() {
-  // 取得登入狀態：isSignedIn 為 true 代表已登入
+  // --- 1. 權限與登入狀態管理 ---
   const { isSignedIn, isLoaded, user } = useUser();
-
-  // 定義權限邏輯
   const canAccessArt = isSignedIn && (
     user.primaryEmailAddress?.emailAddress === "your-email@gmail.com" || 
     user.publicMetadata.role === "vips"
   );
 
+  // --- 2. 核心特效狀態與 Ref 宣告 ---
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [cursorBlurPos, setCursorBlurPos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  // 動態矩陣卡片的 Spotlight Refs
+  const cardRefs = [
+    useRef<HTMLDivElement | null>(null),
+    useRef<HTMLDivElement | null>(null),
+  ];
+
+  // --- 3. 全域動態物理系統 (Canvas 粒子 + 滑鼠追蹤) ---
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMouse({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    // 外圍發光圈平滑延遲演算法
+    let animationFrameId: number;
+    const updateCursorBlur = () => {
+      setCursorBlurPos((prev) => {
+        const dx = mouse.x - prev.x;
+        const dy = mouse.y - prev.y;
+        return {
+          x: prev.x + dx * 0.15,
+          y: prev.y + dy * 0.15,
+        };
+      });
+      animationFrameId = requestAnimationFrame(updateCursorBlur);
+    };
+    animationFrameId = requestAnimationFrame(updateCursorBlur);
+
+    // Canvas 物理碰撞與排斥系統
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let particlesArray: Particle[] = [];
+    const numberOfParticles = 65;
+    let mouseRadius = 140;
+
+    const setCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    setCanvasSize();
+    window.addEventListener('resize', setCanvasSize);
+
+    class ParticleInstance implements Particle {
+      x: number;
+      y: number;
+      size: number;
+      speedX: number;
+      speedY: number;
+      color: string;
+
+      constructor() {
+        this.x = Math.random() * canvas!.width;
+        this.y = Math.random() * canvas!.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.color = Math.random() > 0.5 ? '#00f3ff' : '#ff007f';
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x > canvas!.width || this.x < 0) this.speedX = -this.speedX;
+        if (this.y > canvas!.height || this.y < 0) this.speedY = -this.speedY;
+
+        // 滑鼠排斥力學
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouseRadius) {
+          const forceDirectionX = dx / distance;
+          const forceDirectionY = dy / distance;
+          const force = (mouseRadius - distance) / mouseRadius;
+          this.x -= forceDirectionX * force * 3;
+          this.y -= forceDirectionY * force * 3;
+        }
+      }
+
+      draw() {
+        ctx!.fillStyle = this.color;
+        ctx!.beginPath();
+        ctx!.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx!.closePath();
+        ctx!.fill();
+      }
+    }
+
+    const initParticles = () => {
+      particlesArray = [];
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new ParticleInstance());
+      }
+    };
+    initParticles();
+
+    // 粒子量子化網絡連線
+    const connectParticles = () => {
+      for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a; b < particlesArray.length; b++) {
+          const dx = particlesArray[a].x - particlesArray[b].x;
+          const dy = particlesArray[a].y - particlesArray[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 130) {
+            const opacity = 1 - distance / 130;
+            ctx.strokeStyle = `rgba(0, 243, 255, ${opacity * 0.1})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    };
+
+    let canvasAnimId: number;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particlesArray.forEach((p) => {
+        p.update();
+        p.draw();
+      });
+      connectParticles();
+      canvasAnimId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', setCanvasSize);
+      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(canvasAnimId);
+    };
+  }, [mouse.x, mouse.y]);
+
+  // --- 4. Spotlight 局部座標計算函數 ---
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+    const card = cardRefs[index].current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  };
+
   return (
-    // 深色科技底，外加微弱的放射狀漸層，營造螢幕光感
-    <div className="bg-[#0b0f19] min-h-screen text-slate-100 font-sans relative overflow-x-hidden selection:bg-cyan-500 selection:text-black">
+    <div className="relative min-h-screen w-full bg-[#050508] text-[#e2e8f0] select-none overflow-x-hidden font-sans cursor-none
+      bg-[linear-gradient(to_right,rgba(0,243,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,243,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px]">
       
-      {/* 科技感背景裝飾網格與光暈 */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293710_1px,transparent_1px),linear-gradient(to_bottom,#1f293710_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-[30%] right-[-10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none" />
+      {/* 核心環境深層極光 */}
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* 導覽列：玻璃擬態半透明質感 */}
-      <nav className="bg-[#0f172a]/70 backdrop-blur-md border-b border-slate-800 p-4 sticky top-0 z-50 transition-all">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
-          {/* 左側：Logo - 霓虹發光字體 */}
-          <span className="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r via-cyan-400 from-blue-500 to-purple-500 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)] cursor-pointer">
-            Min&apos;s Core
-          </span>
-          
-          {/* 右側：所有的選單與按鈕 */}
-          <div className="flex items-center space-x-8">
-            {/* 導航文字：作品、聯絡我 */}
-            <div className="hidden md:flex space-x-6 font-medium">
-              <a href="#projects" className="text-slate-400 hover:text-cyan-400 transition-colors duration-300 tracking-wide">核心專案</a>
-              <a href="#contact" className="text-slate-400 hover:text-purple-400 transition-colors duration-300 tracking-wide">信號聯絡</a>
-            </div>
+      {/* A. 客製化量子滑鼠指標 (完美阻斷點擊穿透) */}
+      <div 
+        className="fixed pointer-events-none z-[9999] rounded-full mix-blend-screen transition-all duration-150 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          left: `${mouse.x}px`,
+          top: `${mouse.y}px`,
+          width: isHovered ? '28px' : '8px',
+          height: isHovered ? '28px' : '8px',
+          backgroundColor: isHovered ? 'rgba(255, 0, 127, 0.85)' : '#00f3ff',
+          boxShadow: isHovered ? '0 0 20px #ff007f, inset 0 0 8px #white' : '0 0 12px #00f3ff'
+        }}
+      />
+      <div 
+        className="fixed pointer-events-none z-[9998] rounded-full border transition-transform duration-75 opacity-40 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          left: `${cursorBlurPos.x}px`,
+          top: `${cursorBlurPos.y}px`,
+          width: '44px',
+          height: '44px',
+          borderColor: isHovered ? '#00f3ff' : '#ff007f',
+          transform: `translate(-50%, -50%) scale(${isHovered ? 1.4 : 1})`
+        }}
+      />
 
-            {/* 功能按鈕區塊：根據登入狀態動態顯示 */}
-            <div className="flex items-center space-x-3 border-l pl-8 border-slate-800">
-              {isLoaded && !isSignedIn && (
-                <div className="flex items-center space-x-3">
-                  <SignInButton mode="modal">
-                    <button className="text-slate-400 hover:text-cyan-400 font-medium text-sm transition px-3 py-2">
-                      認證登入
-                    </button>
-                  </SignInButton>
+      {/* B. 背景 Canvas 物理引擎 */}
+      <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-10" />
 
-                  <SignUpButton mode="modal">
-                    <button className="relative group overflow-hidden bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 px-5 py-2 rounded-md text-sm font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] transition-all duration-300">
-                      <span className="relative z-10 text-white">初始化註冊</span>
-                      <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </button>
-                  </SignUpButton>
-                </div>
-              )}
+      {/* C. 頂部高階感導覽列 (玻璃擬態與 Clerk 認證鎖) */}
+      <nav className="fixed top-0 left-0 w-full px-6 md:px-16 h-24 flex justify-between items-center z-50 bg-[#050508]/40 backdrop-blur-md border-b border-white/5">
+        <div className="font-mono font-black text-lg tracking-[4px] text-white drop-shadow-[0_0_10px_rgba(0,243,255,0.3)]">
+          MIN_CORE //
+        </div>
+        
+        <div className="flex items-center space-x-10">
+          <div className="hidden md:flex gap-8 text-xs tracking-[0.2em] font-mono uppercase">
+            <a href="#projects" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="text-slate-400 hover:text-[#00f3ff] transition-colors relative group">// MATRIX</a>
+            <a href="#contact" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="text-slate-400 hover:text-[#ff007f] transition-colors relative group">// SIGNAL</a>
+          </div>
 
-              {isSignedIn && (
-                <div className="border-2 border-cyan-500/50 rounded-full p-0.5 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
-                  <UserButton/>
-                </div>
-              )}
-            </div>
+          {/* Clerk 功能完全不漏 */}
+          <div className="flex items-center space-x-3 border-l border-white/10 pl-6">
+            {isLoaded && !isSignedIn && (
+              <div className="flex items-center space-x-3 font-mono text-xs tracking-wider">
+                <SignInButton mode="modal">
+                  <button onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="text-slate-400 hover:text-white transition px-2 py-1">
+                    LOGIN
+                  </button>
+                </SignInButton>
+
+                <SignUpButton mode="modal">
+                  <button onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="bg-white text-black px-4 py-2 font-bold hover:bg-[#00f3ff] transition shadow-[0_0_15px_rgba(0,243,255,0.2)]">
+                    SIGN_UP
+                  </button>
+                </SignUpButton>
+              </div>
+            )}
+
+            {isSignedIn && (
+              <div className="border border-[#00f3ff]/40 p-0.5 rounded-full shadow-[0_0_10px_rgba(0,243,255,0.2)]">
+                <UserButton/>
+              </div>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* 主視覺區 Hero Section */}
-      <header className="max-w-5xl mx-auto py-24 px-4 flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
-        <div className="flex-1 text-center md:text-left">
-          {/* 科技感小標籤 */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 text-xs font-mono mb-4 shadow-[inset_0_0_10px_rgba(6,182,212,0.2)]">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            SYSTEM STATUS: ONLINE
-          </div>
+      {/* D. 主視覺 Section (名字高擬真細緻排版) */}
+      <header className="max-w-6xl mx-auto min-h-screen pt-20 px-6 md:px-12 grid md:grid-cols-12 gap-12 items-center relative z-20">
+        <div className="md:col-span-7 text-center md:text-left space-y-8">
           
-          <h1 className="text-4xl sm:text-5xl font-black mb-6 tracking-tight text-white leading-tight">
-            Hello ! &nbsp; 這裡是 <br className="sm:hidden" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-400 drop-shadow-sm">
-              MinDieh
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900/60 border border-white/5 font-mono text-[10px] tracking-[3px] text-[#00f3ff] uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00f3ff] animate-pulse" />
+            NODE_STATUS // ONLINE
+          </div>
+
+          <h1 className="font-mono text-4xl sm:text-6xl font-black tracking-[4px] leading-none uppercase text-white">
+            QUANTUM AURA <br />
+            <span className="text-slate-400 text-2xl sm:text-3xl tracking-[0.15em] font-light block mt-4 mb-2">這裡是</span>
+            <span className="inline-block tracking-[0.25em] bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] via-blue-500 to-[#ff007f] drop-shadow-[0_0_20px_rgba(0,243,255,0.4)]">
+              Dieh.
             </span>
-          </h1> 
-          <p className="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed font-light">
-            歡迎來到我的數位觀測站。這裡記錄了我關於互動程式、多媒體感測、以及全端網頁的開發軌跡。很高興認識你。
+          </h1>
+          
+          <p className="text-sm sm:text-base tracking-[2px] text-[#8a99ad] max-w-lg leading-relaxed uppercase">
+            歡迎來到我的數位觀測站。此處專注於全端網絡架構、多媒體感測互動、以及次世代視覺維度的解構實驗。
           </p>
-          <div className="flex justify-center md:justify-start gap-4">
-            <a href="#projects" className="bg-slate-900 border border-cyan-500/50 text-cyan-400 px-6 py-2.5 rounded-md hover:bg-cyan-500 hover:text-slate-950 transition-all duration-300 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-              核心技術
+          
+          <div className="flex justify-center md:justify-start gap-4 pt-2 font-mono text-xs tracking-widest">
+            <a href="#projects" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
+              className="px-6 py-3 border border-[#00f3ff]/50 text-[#00f3ff] hover:bg-[#00f3ff] hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(0,243,255,0.1)]">
+              CONNECT_MATRIX
             </a>
-            <button className="border border-slate-700 hover:border-purple-500 text-slate-300 hover:text-purple-400 px-6 py-2.5 rounded-md transition-all duration-300 font-medium">
-              數據履歷
+            <button onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
+              className="px-6 py-3 border border-white/10 hover:border-[#ff007f] text-slate-400 hover:text-[#ff007f] transition-all duration-300">
+              DOWNLOAD_CV
             </button>
           </div>
         </div>
         
-        {/* 頭像區域 */}
-        <div className="flex-1 flex justify-center relative group">
-          {/* 外圍科技感發光環 */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-500 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 max-w-[340px] max-h-[340px] m-auto" />
-          <div className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] rounded-full p-1 bg-gradient-to-b from-cyan-500 via-transparent to-purple-500 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
-            <div className="w-full h-full rounded-full bg-[#0b0f19] overflow-hidden relative">
-              <Image 
-                src="/5.png" // 對應到 public 資料夾
-                alt="我的頭像"
-                fill
-                priority
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
+        {/* 右側：不對稱科技線條幾何頭像 */}
+        <div className="md:col-span-5 flex justify-center relative">
+          <div className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] group">
+            <div className="absolute -inset-3 border border-white/5 pointer-events-none group-hover:border-[#00f3ff]/20 transition-colors duration-500" />
+            <div className="absolute -top-3 -left-3 w-4 h-4 border-t-2 border-l-2 border-[#00f3ff]" />
+            <div className="absolute -bottom-3 -right-3 w-4 h-4 border-b-2 border-r-2 border-[#ff007f]" />
+            
+            <div className="w-full h-full rounded-full p-0.5 bg-gradient-to-b from-slate-800 to-transparent overflow-hidden shadow-[0_0_40px_rgba(0,243,255,0.15)]">
+              <div className="w-full h-full rounded-full bg-[#050508] overflow-hidden relative">
+                <Image 
+                  src="/5.png" 
+                  alt="我的頭像"
+                  fill
+                  priority
+                  className="object-cover scale-105 group-hover:scale-110 transition duration-700 filter grayscale-[15%] group-hover:grayscale-0"
+                />
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* 作品展示區 */}
-      <section id="projects" className="max-w-5xl mx-auto py-20 px-4 border-t border-slate-900 scroll-mt-20 relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-12">
+      {/* E. 互動 Spotlight 核心專案展示區 */}
+      <section id="projects" className="max-w-6xl mx-auto px-6 md:px-12 py-24 z-20 relative scroll-mt-20">
+        <div className="mb-14 flex justify-between items-end">
           <div>
-            <h2 className="text-3xl font-extrabold text-white tracking-wide">精選專案</h2>
-            <p className="text-slate-500 text-sm mt-1">Projects Archive</p>
+            <span className="font-mono text-xs text-[#00f3ff] tracking-[0.3em] block mb-2">// DATA_ARRAY</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-wider uppercase">精選專案矩陣</h2>
           </div>
-          <div className="h-[2px] flex-1 bg-gradient-to-r from-slate-900 via-cyan-900/30 to-transparent ml-6 hidden sm:block" />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          
-          {/* 1. 多媒體互動 / 全端網頁專案 */}
+          {/* 專案一：全端網頁 */}
           <Link href="#">
-            <div className="bg-slate-900/40 backdrop-blur-sm p-6 rounded-xl border border-slate-800/80 hover:border-cyan-500/50 shadow-md hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] transition-all duration-300 cursor-pointer group flex flex-col h-full">
-              {/* 圖片預留區改為極簡科技風格 */}
-              <div className="w-full h-44 bg-slate-950 rounded-lg mb-4 flex flex-col items-center justify-center text-slate-600 group-hover:text-cyan-400 border border-slate-900 group-hover:border-cyan-950/50 transition-all duration-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-xs tracking-widest text-slate-500 group-hover:text-cyan-400/80 mb-1">[ PROJECT // 01 ]</span>
-                <span className="text-sm font-medium tracking-wide">互動多媒體 / 全端系統</span>
+            <div
+              ref={cardRefs[0]}
+              onMouseMove={(e) => handleCardMouseMove(e, 0)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
+                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full"
+            >
+              <div className="mb-6 w-12 h-12 rounded bg-slate-900/80 border border-white/5 flex items-center justify-center text-[#00f3ff] group-hover:scale-110 transition-transform">
+                <Cpu className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-xl group-hover:text-cyan-400 text-slate-100 transition-colors">我的第一個全端網頁</h3>
-              <p className="text-slate-400 text-sm mt-2 flex-grow leading-relaxed">
-                整合後端資料庫與前端即時渲染，打造兼具流暢度與感官體驗的互動式全端架構。點擊查看詳細開發棧。
+              <h3 className="font-mono text-lg font-bold mb-3 tracking-wider text-white">我的第一個全端網頁</h3>
+              <p className="text-[#8a99ad] leading-relaxed text-sm font-light flex-grow">
+                整合後端安全雲端資料架構與前端極致動態渲染，完美對接伺服器核心數據，實現高度流暢的全端互動封包。
               </p>
-              <div className="text-cyan-400 text-xs font-mono font-semibold mt-4 flex items-center gap-1">
-                INITIALIZE MODULE <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+              <div className="text-[#00f3ff] text-xs font-mono tracking-widest mt-6 flex items-center gap-1.5">
+                EXEC_MODULE <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
               </div>
             </div>
           </Link>
 
-          {/* 2. 繪畫作品：限時解鎖區 */}
+          {/* 專案二：繪畫收藏區 (Clerk VIP 邏輯完全鎖定保護) */}
           {canAccessArt ? (
             <Link href="/project/my-gallery">
-              <div className="bg-slate-900/40 backdrop-blur-sm p-6 rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-950/10 to-transparent hover:border-purple-500 shadow-md hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-all duration-300 cursor-pointer group flex flex-col h-full">
-                <div className="w-full h-44 bg-purple-950/20 rounded-lg mb-4 flex flex-col items-center justify-center text-purple-400 border border-purple-900/30 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent" />
-                  <span className="font-mono text-xs tracking-widest text-purple-400/60 mb-1">[ ACCESS GRANTED ]</span>
-                  <span className="text-sm font-medium">🎨 點擊進入私人畫廊</span>
+              <div
+                ref={cardRefs[1]}
+                onMouseMove={(e) => handleCardMouseMove(e, 1)}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="relative bg-[rgba(255,255,255,0.01)] border border-[#ff007f]/30 p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+                  hover:-translate-y-1.5 hover:border-[#ff007f] hover:shadow-[0_10px_30px_rgba(255,0,127,0.08)]
+                  before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(255,0,127,0.05),transparent_40%)] flex flex-col h-full"
+              >
+                <div className="mb-6 w-12 h-12 rounded bg-purple-950/20 border border-[#ff007f]/20 flex items-center justify-center text-[#ff007f] group-hover:scale-110 transition-transform">
+                  <Atom className="w-6 h-6 animate-spin-slow" />
                 </div>
-                <h3 className="font-bold text-xl text-purple-400">我的繪畫收藏 ( 已解鎖 )</h3>
-                <p className="text-slate-400 text-sm mt-2 flex-grow leading-relaxed">
-                  核心視覺庫已連線。此處收藏了個人原創的數位電繪、視覺實驗與概念美術創作，點擊自由瀏覽。
+                <h3 className="font-mono text-lg font-bold mb-3 tracking-wider text-[#ff007f]">我的繪畫收藏 ( 已解鎖 )</h3>
+                <p className="text-[#8a99ad] leading-relaxed text-sm font-light flex-grow">
+                  憑證安全校驗通過。核心圖形庫已成功加載，歡迎進入查看個人數位電繪、原創概念藝術設計與視覺實驗。
                 </p>
-                <div className="text-purple-400 text-xs font-mono font-semibold mt-4">
-                  DECRYPTED SUCCESSFULLY
+                <div className="text-[#ff007f] text-xs font-mono tracking-widest mt-6">
+                  ACCESS_GRANTED // OPEN_CORE *
                 </div>
               </div>
             </Link>
           ) : (
-            <div className="bg-slate-950/40 backdrop-blur-sm p-6 rounded-xl border border-dashed border-slate-800 opacity-60 flex flex-col h-full relative group">
-              <div className="w-full h-44 bg-slate-900/50 rounded-lg mb-4 flex flex-col items-center justify-center text-slate-600 border border-slate-950">
-                <span className="font-mono text-xs tracking-widest mb-1">[ ENCRYPTED ]</span>
-                <span className="text-sm">🔒 核心權限未解鎖</span>
+            <div className="relative bg-slate-950/20 border border-dashed border-white/5 p-8 rounded backdrop-blur-sm opacity-50 flex flex-col h-full select-none">
+              <div className="mb-6 w-12 h-12 rounded bg-slate-900 border border-white/5 flex items-center justify-center text-slate-600">
+                <ShieldAlert className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-xl text-slate-500">私密繪畫作品</h3>
-              <p className="text-slate-500 text-sm mt-2 flex-grow leading-relaxed">
-                此加密安全區包含私密原創視覺藝術，限制特定 VIP 或授權認證。如需索取存取憑證（Token），請由下方發送對接訊號。
+              <h3 className="font-mono text-lg font-bold mb-3 tracking-wider text-slate-500">私密繪畫作品</h3>
+              <p className="text-slate-600 text-sm font-light leading-relaxed flex-grow">
+                此矩陣節點已高度加密。僅限特定的安全帳戶或 VIP 使用者授權存取。您可以透過下方通訊埠提交權限申請（Token）。
               </p>
-              <div className="text-slate-600 text-xs font-mono mt-4">
-                WAITING FOR CREDITENTIALS...
+              <div className="text-slate-700 text-xs font-mono tracking-widest mt-6">
+                ENCRYPTED_SIGNAL_LOCK //
               </div>
             </div>
           )}
         </div>
       </section>
 
-      {/* 聯絡我表單區 */}
-      <section id="contact" className="max-w-md mx-auto py-24 px-4 text-center relative z-10 scroll-mt-20">
-        <h2 className="text-3xl font-extrabold text-white mb-2 tracking-wide">信號傳輸端</h2>
-        <p className="text-slate-400 text-sm mb-8 font-light">發送加密郵件或工作邀約直接與我對接</p>
+      {/* F. 聯絡我表單區 (Web3Forms 高科技終端介面) */}
+      <section id="contact" className="max-w-xl mx-auto py-24 px-6 relative z-20 scroll-mt-20">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl font-black text-white tracking-widest uppercase">訊號對接端點</h2>
+          <p className="text-slate-500 font-mono text-xs mt-2 tracking-wider">SECURE SIGNAL UPLOADER</p>
+        </div>
         
-        {/* 表單改用深色科幻輸入框 */}
-        <form action="https://api.web3forms.com/submit" method="POST" className="space-y-5 text-left bg-slate-900/50 p-8 rounded-2xl border border-slate-800/80 backdrop-blur-md shadow-xl">
+        <form action="https://api.web3forms.com/submit" method="POST" className="space-y-6 bg-slate-900/20 border border-white/5 p-8 sm:p-10 relative backdrop-blur-md">
           <input type="hidden" name="access_key" value="abce0b1a-895b-44ed-88af-013c8c2166ca" />
           
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">發信源姓名 / Identity</label>
-            <input 
-              type="text" 
-              name="name" 
-              required 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-light text-sm"
-              placeholder="e.g. Guest Player"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">聯絡信箱 / Vector Address</label>
-            <input 
-              type="email" 
-              name="email" 
-              required 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-light text-sm"
-              placeholder="your-signal@domain.com"
-            />
+          <div className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 w-16 h-[1px] bg-[#00f3ff]/30 rotate-45 pointer-events-none" />
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-2">Identity / 姓名</label>
+              <input 
+                type="text" 
+                name="name" 
+                required 
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="w-full bg-slate-950/80 border border-white/10 rounded-none p-3 text-slate-100 placeholder-slate-700 focus:outline-none focus:border-[#00f3ff] focus:ring-1 focus:ring-[#00f3ff] transition-all font-light text-xs cursor-text"
+                placeholder="Your Identity"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-2">Vector / 信箱</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="w-full bg-slate-950/80 border border-white/10 rounded-none p-3 text-slate-100 placeholder-slate-700 focus:outline-none focus:border-[#00f3ff] focus:ring-1 focus:ring-[#00f3ff] transition-all font-light text-xs cursor-text"
+                placeholder="name@domain.com"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">封包訊息 / Core Content</label>
+            <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-2">Payload / 傳輸內容</label>
             <textarea 
               name="message" 
-              rows={4} 
+              rows={5} 
               required 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all font-light text-sm resize-none"
-              placeholder="輸入你想傳送的訊號內容..."
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="w-full bg-slate-950/80 border border-white/10 rounded-none p-3 text-slate-100 placeholder-slate-700 focus:outline-none focus:border-[#ff007f] focus:ring-1 focus:ring-[#ff007f] transition-all font-light text-xs resize-none cursor-text"
+              placeholder="Write core packets here..."
             ></textarea>
           </div>
 
           <button 
             type="submit" 
-            className="w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white py-3.5 rounded-lg font-bold tracking-widest text-sm shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all duration-300 uppercase"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="w-full bg-transparent border border-[#00f3ff] text-white hover:bg-[#00f3ff] hover:text-black py-4 font-mono font-bold tracking-[0.3em] text-xs transition-all duration-300 uppercase shadow-[0_0_15px_rgba(0,243,255,0.1)] hover:shadow-[0_0_30px_rgba(0,243,255,0.4)]"
           >
-            發送核心訊號
+            Transmit Signal
           </button>
         </form>
       </section>
 
-      {/* 頁尾 */}
-      <footer className="max-w-5xl mx-auto py-8 text-center text-xs font-mono text-slate-600 border-t border-slate-900 relative z-10">
-        © {new Date().getFullYear()} Yuxi. ALL RIGHTS SECURED. TERMINAL_V1.0.0
+      {/* G. 頁尾 */}
+      <footer className="max-w-6xl mx-auto py-12 text-center text-[10px] font-mono text-slate-600 border-t border-white/5 relative z-10 tracking-[0.2em]">
+        © {new Date().getFullYear()} YUXI. STABLE_CORE_V2. // ALL SYSTEMS OPERATIONAL.
       </footer>
       
     </div>
