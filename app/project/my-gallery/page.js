@@ -27,7 +27,7 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-[#050508] text-[#e2e8f0] py-20 px-4">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-10 font-mono tracking-wider text-white">我的私密畫廊 🎨</h1>
+        <h1 className="text-3xl font-bold mb-10 font-mono tracking-wider text-white">我的私密畫廊</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         

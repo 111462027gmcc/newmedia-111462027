@@ -358,7 +358,7 @@ export default function Home() {
               Blue Dream
             </h3>
             <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
-              解構次世代三維視覺維度，整合複雜幾何動態物理模擬與光影渲染實驗。透過流暢的鏡頭語彙，呈現數位世界深層的核心訊號流。
+              我進入了一場藍色的夢，周圍充滿了流動的光影和模糊的輪廓，我試圖透過動畫捕捉那種虛幻又真實的感覺。
             </p>
             
             <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
