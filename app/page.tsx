@@ -320,29 +320,50 @@ export default function Home() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          {/* 專案一：全端網頁 */}
-          <Link href="#">
-            <div
-              ref={cardRefs[0]}
-              onMouseMove={(e) => handleCardMouseMove(e, 0)}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
-                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
-                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full"
-            >
-              <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-slate-900/80 border border-white/5 flex items-center justify-center text-[#00f3ff] group-hover:scale-110 transition-transform">
-                <Cpu className="w-5 h-5 sm:w-6 sm:h-6" />
+          {/* 專案一：3D 動畫作品影片 */}
+        <Link href="#video-detail-or-your-link"> 
+          <div
+            ref={cardRefs[0]}
+            onMouseMove={(e) => handleCardMouseMove(e, 0)}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+              hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
+              before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full"
+          >
+            {/* 影片容器：高科技切角與霓虹邊框 */}
+            <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
+              {/* 裝飾線條 */}
+              <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30 animate-pulse">
+                LIVE_STREAM // 3D_RENDER
               </div>
-              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">我的第一個全端網頁</h3>
-              <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
-                整合後端安全雲端資料架構與前端極致動態渲染，完美對接伺服器核心數據，實現高度流暢的全端互動封包。
-              </p>
-              <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
-                EXEC_MODULE <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
-              </div>
+              
+              <video
+                src="/周明蝶_基礎動畫_期末作品.mp4" /* 💡 請更換為你在 public 資料夾底下的影片檔名 */
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 filter contrast-[110%]"
+              />
+              
+              {/* 影片上方覆蓋一層淡淡的科技網格感疊加層（可選，維持風格一致） */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
             </div>
-          </Link>
+
+            {/* 文字與標籤區 */}
+            <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
+              我的第一個 3D 動畫作品
+            </h3>
+            <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
+              解構次世代三維視覺維度，整合複雜幾何動態物理模擬與光影渲染實驗。透過流暢的鏡頭語彙，呈現數位世界深層的核心訊號流。
+            </p>
+            
+            <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
+              PLAY_MODULE <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+            </div>
+          </div>
+        </Link>
 
           {/* 專案二：繪畫收藏區 */}
           {canAccessArt ? (
