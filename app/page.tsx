@@ -320,8 +320,13 @@ export default function Home() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          {/* 專案一：3D 動畫作品影片 */}
-        <Link href="#video-detail-or-your-link"> 
+        {/* 專案一：3D 動畫作品影片 (點擊直開新分頁) */}
+        <Link 
+          href="/周明蝶_基礎動畫_期末作品.mp4" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="block h-full"
+        > 
           <div
             ref={cardRefs[0]}
             onMouseMove={(e) => handleCardMouseMove(e, 0)}
@@ -329,42 +334,38 @@ export default function Home() {
             onMouseLeave={() => setIsHovered(false)}
             className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
               hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
-              before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full"
+              before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
           >
-            {/* 影片容器：高科技切角與霓虹邊框 */}
+            {/* 影片容器 */}
             <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
-              {/* 裝飾線條 */}
               <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30 animate-pulse">
                 LIVE_STREAM // 3D_RENDER
               </div>
               
               <video
-                src="/周明蝶_基礎動畫_期末作品.mp4" /* 💡 請更換為你在 public 資料夾底下的影片檔名 */
+                src="/周明蝶_基礎動畫_期末作品.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 filter contrast-[110%]"
               />
-              
-              {/* 影片上方覆蓋一層淡淡的科技網格感疊加層（可選，維持風格一致） */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
             </div>
 
             {/* 文字與標籤區 */}
             <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
-              我的第一個 3D 動畫作品
+              Blue Dream
             </h3>
             <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
               解構次世代三維視覺維度，整合複雜幾何動態物理模擬與光影渲染實驗。透過流暢的鏡頭語彙，呈現數位世界深層的核心訊號流。
             </p>
             
             <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
-              PLAY_MODULE <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+              LAUNCH_FULLSCREEN <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
             </div>
           </div>
         </Link>
-
           {/* 專案二：繪畫收藏區 */}
           {canAccessArt ? (
             <Link href="/project/my-gallery" className="block h-full"> 
