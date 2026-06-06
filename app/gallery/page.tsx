@@ -74,11 +74,11 @@ export default function GalleryPage() {
         {/* 頁面標題 */}
         <header className="mb-12 md:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900/60 border border-white/5 font-mono text-[10px] tracking-[3px] text-[#00f3ff] uppercase mb-4">
-            <ImageIcon className="w-3 h-3" />
+            
             VISUAL_ARCHIVE // 影像總庫
           </div>
           <h1 className="font-mono text-2xl sm:text-4xl font-black tracking-wider text-white uppercase">
-            Visual Capture - <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]">影像作品合輯</span>
+             Visual Capture - <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]">影像作品合輯</span>
           </h1>
           <p className="text-xs sm:text-sm text-[#8a99ad] max-w-2xl mt-4 leading-relaxed tracking-wide">
             此處解鎖並完整載入所有數位創作與視覺解構實驗，點擊各個節點可查看像素特徵與光影維度。
