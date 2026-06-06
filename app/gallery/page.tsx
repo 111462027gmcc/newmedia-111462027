@@ -11,7 +11,7 @@ const myImages = [
         id: 1, 
         src: '/111462027-周明蝶-看海的夢境 (人類視角).jpg', 
         alt: '看海的夢境 (人類視角)', 
-        title: 'Sea Of Dreams', 
+        title: 'Sea of Dreams', 
         date: '2025 / 10 / 17',
         description: '靈感來源於過去所做的一場夢，我特別迷戀那時的月光和海，真希望還能再回去看看。'
     },
@@ -22,7 +22,16 @@ const myImages = [
     title: 'Parallel Universe', 
     date: '2025 / 10 / 28',
     description: '宇宙搞不好只是一件高維度所做出來的全息投影作品，平行時空其實就是投影畫面被分割後的結果。'
-  },
+    },
+
+    { 
+    id: 3, 
+    src: '/DSC02839.jpg', 
+    alt: '/DSC02839.jpg', 
+    title: 'Light and Shadow', 
+    date: '2025 / 10 / 29',
+    description: '小巷內的光與影交織在一起，形成了獨特的風景。'
+    },
 
   
   // 💡 有新作品時，直接依照這個結構複製一行貼在下面即可
