@@ -398,7 +398,48 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* 專案二：生命長廊 */}
+          {/* ✨ 新增專案：影像/圖片作品展示卡片 ✨ */}
+          <Link 
+            href="/gallery" // 👈 這裡修改成你要跳轉的內部路由路徑
+            className="block h-full"
+          >
+            <div
+              ref={cardRefs[1]}
+              onMouseMove={(e) => handleCardMouseMove(e, 1)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300 ..."
+            >
+              {/* 圖片預覽容器 */}
+              <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
+                <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30">
+                  STATIC_CAPTURE // IMAGE_FRAME
+                </div>
+                
+                {/* 預覽封面圖 (請替換為你的作品代表圖路徑，例如 /my-art.jpg) */}
+                <Image 
+                  src="/111462027-周明蝶-平行時空 (人類視角).jpg" 
+                  alt="影像作品預覽"
+                  fill
+                  className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
+              </div>
+
+              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
+                Visual Capture - 影像作品合輯
+              </h3>
+              <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
+                此處收錄了平面攝影、數位影像創作與視覺解構實驗。透過快門與光影像素，定格數位維度中的瞬間感知。
+              </p>
+              
+              <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
+                VIEW_GALLERY <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+              </div>
+            </div>
+          </Link>
+
+          {/* 專案三：生命長廊 */}
           <Link 
             href="/程式設計與應用_周明蝶_期末作品 (3).mp4" 
             target="_blank" 
@@ -444,47 +485,6 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* ✨ 新增專案：影像/圖片作品展示卡片 ✨ */}
-          <Link 
-            href="/gallery" // 👈 這裡修改成你要跳轉的內部路由路徑
-            className="block h-full"
-          >
-            <div
-              ref={cardRefs[1]}
-              onMouseMove={(e) => handleCardMouseMove(e, 1)}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300 ..."
-            >
-              {/* 圖片預覽容器 */}
-              <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
-                <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30">
-                  STATIC_CAPTURE // IMAGE_FRAME
-                </div>
-                
-                {/* 預覽封面圖 (請替換為你的作品代表圖路徑，例如 /my-art.jpg) */}
-                <Image 
-                  src="/111462027-周明蝶-平行時空 (人類視角).jpg" 
-                  alt="影像作品預覽"
-                  fill
-                  className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
-              </div>
-
-              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
-                Visual Capture - 影像作品合輯
-              </h3>
-              <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
-                此處收錄了平面攝影、數位影像創作與視覺解構實驗。透過快門與光影像素，定格數位維度中的瞬間感知。
-              </p>
-              
-              <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
-                VIEW_GALLERY <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
-              </div>
-            </div>
-          </Link>
-
           {/* 專案三：作品收藏區 (原 Ref[1] 順延為 Ref[2]) */}
           {canAccessArt ? (
             <Link href="/project/my-gallery" className="block h-full"> 
@@ -509,6 +509,9 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+
+
+
           ) : (
             <div className="relative bg-slate-950/20 border border-dashed border-white/5 p-6 sm:p-8 rounded backdrop-blur-sm opacity-50 flex flex-col h-full select-none">
               <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-slate-900 border border-white/5 flex items-center justify-center text-slate-600">
