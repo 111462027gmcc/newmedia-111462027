@@ -398,17 +398,15 @@ export default function Home() {
 
           {/* ✨ 新增專案：影像/圖片作品展示卡片 ✨ */}
           <Link 
-            href="/project/my-photography" // 這裡替換成你想跳轉的圖片作品集路徑
+            href="/gallery" // 👈 這裡修改成你要跳轉的內部路由路徑
             className="block h-full"
           >
             <div
-              ref={cardRefs[1]} // 使用第二個 Ref 的位置
+              ref={cardRefs[1]}
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
-                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
-                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300 ..."
             >
               {/* 圖片預覽容器 */}
               <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
@@ -468,7 +466,7 @@ export default function Home() {
               <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-slate-900 border border-white/5 flex items-center justify-center text-slate-600">
                 <ShieldAlert className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-slate-500">私密繪畫作品</h3>
+              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-slate-500">個人私密作品</h3>
               <p className="text-slate-600 text-xs sm:text-sm font-light leading-relaxed flex-grow">
                 此矩陣節點已高度加密。僅限特定的安全帳戶或 VIP 使用者授權存取。您可以透過下方通訊埠提交權限申請（Token）。
               </p>

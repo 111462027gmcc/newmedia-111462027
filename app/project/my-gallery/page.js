@@ -52,7 +52,7 @@ export default function GalleryPage() {
               <div>
                 <h2 className="text-xl font-bold text-white mb-2 tracking-wide">人類檔案</h2>
                 <p className="text-sm text-[#94a3b8] leading-relaxed">
-                  我駭入了上帝的電腦，並且發現了一個名叫 Homosapien 的檔案，裡面居然寫滿了關於我的角色初始設定...
+                  我駭入了上帝的電腦，並且發現了一個名叫 Homosapien 的檔案，裡面居然寫滿了關於我的角色初始設定 ...
                 </p>
               </div>
               {/* 可選：底部加上年份或媒材標籤 */}
