@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import Image from 'next/image';
 import Link from 'next/link';
-import { Cpu, Atom, ShieldAlert, ArrowRight, ImageIcon } from 'lucide-react'; // 引入 ImageIcon
+import { Cpu, Atom, ShieldAlert, ArrowRight, ImageIcon } from 'lucide-react';
 
 interface Particle {
   x: number;
@@ -20,6 +20,11 @@ interface Particle {
 export default function Home() {
   // --- 1. 權限與登入狀態管理 ---
   const { isSignedIn, isLoaded, user } = useUser();
+
+  // 檢查用戶是否被 Clerk 後台封鎖
+  const isBlocked = isSignedIn && user.publicMetadata.role === "blocked";
+
+  // 檢查是否擁有 VIP 畫廊權限
   const canAccessArt = isSignedIn && (
     user.primaryEmailAddress?.emailAddress === "your-email@gmail.com" || 
     user.publicMetadata.role === "vips"
@@ -31,7 +36,7 @@ export default function Home() {
   const [cursorBlurPos, setCursorBlurPos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   
-    // 1. 定義圖片作品的數據結構與內容
+  // 1. 定義圖片作品的數據結構與內容
   const photographyWorks = [
     {
       id: 1,
@@ -42,14 +47,14 @@ export default function Home() {
     },
     {
       id: 2,
-      src: "/path-to-your-image-2.jpg", // 🌟 請替換成你的第二張作品路徑
+      src: "/path-to-your-image-2.jpg", 
       title: "量子共振 / QUANTUM_RESONANCE",
       desc: "數位幾何圖形與環境光線的粒子感應實驗，捕捉不可見的網絡信號波動。",
       date: "2026.02"
     },
     {
       id: 3,
-      src: "/path-to-your-image-3.jpg", // 🌟 請替換成你的第三張作品路徑
+      src: "/path-to-your-image-3.jpg", 
       title: "賽博邊界 / CYBER_HORIZON",
       desc: "霓虹像素在低對比度環境下的衰減狀態研究，呈現虛擬與現實交界的冷冽感。",
       date: "2026.05"
@@ -59,11 +64,12 @@ export default function Home() {
   // 2. 宣告彈窗控制狀態
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
-  // 動態矩陣卡片張數 (原本 2 張改為 3 張)
+  // 動態矩陣卡片張數（對應下方 4 個可互動的區塊）
   const cardRefs = [
-    useRef<HTMLDivElement | null>(null),
-    useRef<HTMLDivElement | null>(null),
-    useRef<HTMLDivElement | null>(null), // 為新增的圖片卡片準備的 Ref
+    useRef<HTMLDivElement | null>(null), // 3D 動畫
+    useRef<HTMLDivElement | null>(null), // 影像作品合輯
+    useRef<HTMLDivElement | null>(null), // 生命長廊
+    useRef<HTMLDivElement | null>(null), // 私人收藏區
   ];
 
   // --- 3. 全域動態物理系統 (Canvas 粒子 + 滑鼠追蹤) ---
@@ -211,6 +217,27 @@ export default function Home() {
     card.style.setProperty('--mouse-y', `${y}px`);
   };
 
+  // --- 5. 攔截功能：如果 Clerk 偵測到用戶被封鎖，直接沒收全站網頁 ---
+  if (isLoaded && isBlocked) {
+    return (
+      <div className="min-h-screen bg-[#050508] text-white flex flex-col items-center justify-center p-4 text-center font-mono relative">
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20 bg-[linear-gradient(to_right,rgba(255,0,127,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,0,127,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
+        <div className="bg-slate-950/60 p-8 border border-[#ff007f]/30 max-w-md shadow-[0_0_50px_rgba(255,0,127,0.15)] relative">
+          <div className="text-[#ff007f] text-5xl mb-4 animate-pulse">🛑</div>
+          <h1 className="text-xl font-black tracking-widest text-[#ff007f] mb-3">SIGNAL_DENIED // 帳號已封鎖</h1>
+          <p className="text-slate-400 text-xs leading-relaxed mb-6">
+            偵測到不安全或未授權的連線活動。您的存取憑證已被系統永久撤銷，如有任何爭議請聯絡管理埠。
+          </p>
+          <div className="flex justify-center border-t border-white/5 pt-5">
+            <div className="border border-[#00f3ff]/40 p-0.5 rounded-full shadow-[0_0_10px_rgba(0,243,255,0.2)]">
+              <UserButton />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen w-full bg-[#050508] text-[#e2e8f0] select-none overflow-x-hidden font-sans md:cursor-none
       bg-[linear-gradient(to_right,rgba(0,243,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,243,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px]">
@@ -219,7 +246,7 @@ export default function Home() {
       <div className="absolute top-[-20%] left-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-cyan-500/5 rounded-full blur-[80px] md:blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/5 rounded-full blur-[80px] md:blur-[140px] pointer-events-none" />
 
-      {/* A. 客製化量子滑鼠指標 (在行動裝置與平板上完全隱藏) */}
+      {/* A. 客製化量子滑鼠指標 */}
       <div 
         className="hidden md:block fixed pointer-events-none z-[9999] rounded-full mix-blend-screen transition-all duration-150 -translate-x-1/2 -translate-y-1/2"
         style={{
@@ -320,7 +347,7 @@ export default function Home() {
         {/* 右側：不對稱科技線條幾何頭像 */}
         <div className="md:col-span-5 flex justify-center relative order-1 md:order-2 pt-4 md:pt-0">
           <div className="relative w-[200px] h-[200px] sm:w-[260px] sm:h-[260px] md:w-[320px] md:h-[320px] group">
-            <div className="absolute -inset-2.5 md:-inset-3 border border border-white/5 pointer-events-none group-hover:border-[#00f3ff]/20 transition-colors duration-500" />
+            <div className="absolute -inset-2.5 md:-inset-3 border border-white/5 pointer-events-none group-hover:border-[#00f3ff]/20 transition-colors duration-500" />
             <div className="absolute -top-2.5 -left-2.5 md:-top-3 md:-left-3 w-3 h-3 md:w-4 md:h-4 border-t-2 border-l-2 border-[#00f3ff]" />
             <div className="absolute -bottom-2.5 -right-2.5 md:-bottom-3 md:-right-3 w-3 h-3 md:w-4 md:h-4 border-b-2 border-r-2 border-[#ff007f]" />
             
@@ -348,10 +375,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 調整為 grid-cols-1 md:grid-cols-2 或 3 的彈性排版，讓多個卡片完美並排 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           
-          {/* 專案一：3D 動畫作品影片 */}
+          {/* 專案一：3D 動畫作品影片 (對應 Ref[0]) */}
           <Link 
             href="/周明蝶_基礎動畫_期末作品.mp4" 
             target="_blank" 
@@ -389,18 +415,15 @@ export default function Home() {
               <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
                 好似進入了一場藍色的夢，周圍充滿了流動的光影和模糊的輪廓，我試圖透過動畫捕捉那種虛幻又真實的感覺。
               </p>
-              {/* 可選：底部加上年份或媒材標籤 */}
               <div className="mt-4 pt-2 border-t border-gray-800 text-xs text-[#ff007f]/70 font-mono">
-                2025 / 11 / 16 / 06'09"
+                2025 / 11 / 16 / 06&apos;09&quot;
               </div>
-              
-              
             </div>
           </Link>
 
-          {/* ✨ 新增專案：影像/圖片作品展示卡片 ✨ */}
+          {/* 專案二：影像/圖片作品展示卡片 (對應 Ref[1]) */}
           <Link 
-            href="/gallery" // 👈 這裡修改成你要跳轉的內部路由路徑
+            href="/gallery" 
             className="block h-full"
           >
             <div
@@ -408,15 +431,15 @@ export default function Home() {
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300 ..."
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
+                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
             >
-              {/* 圖片預覽容器 */}
               <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
                 <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30">
                   STATIC_CAPTURE // IMAGE_FRAME
                 </div>
                 
-                {/* 預覽封面圖 (請替換為你的作品代表圖路徑，例如 /my-art.jpg) */}
                 <Image 
                   src="/111462027-周明蝶-平行時空 (人類視角).jpg" 
                   alt="影像作品預覽"
@@ -439,7 +462,7 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* 專案三：生命長廊 */}
+          {/* 專案三：生命長廊 (修復綁定：對應 Ref[2]) */}
           <Link 
             href="/程式設計與應用_周明蝶_期末作品 (3).mp4" 
             target="_blank" 
@@ -447,8 +470,8 @@ export default function Home() {
             className="block h-full"
           > 
             <div
-              ref={cardRefs[0]}
-              onMouseMove={(e) => handleCardMouseMove(e, 0)}
+              ref={cardRefs[2]}
+              onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
@@ -477,20 +500,18 @@ export default function Home() {
               <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
                 生命好似一條黑色的長廊，或許人們都被困在這場無止盡的輪迴當中。
               </p>
-              {/* 可選：底部加上年份或媒材標籤 */}
               <div className="mt-4 pt-2 border-t border-gray-800 text-xs text-[#ff007f]/70 font-mono">
-                2026 / 05 / 27 / 04'15"
+                2026 / 05 / 27 / 04&apos;15&quot;
               </div>
-
             </div>
           </Link>
 
-          {/* 專案三：作品收藏區 (原 Ref[1] 順延為 Ref[2]) */}
+          {/* 專案四：加密作品收藏區 (修復綁定：對應 Ref[3]) */}
           {canAccessArt ? (
             <Link href="/project/my-gallery" className="block h-full"> 
               <div
-                ref={cardRefs[2]}
-                onMouseMove={(e) => handleCardMouseMove(e, 2)}
+                ref={cardRefs[3]}
+                onMouseMove={(e) => handleCardMouseMove(e, 3)}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 className="relative bg-[rgba(255,255,255,0.01)] border border-[#ff007f]/30 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
@@ -509,9 +530,6 @@ export default function Home() {
                 </div>
               </div>
             </Link>
-
-
-
           ) : (
             <div className="relative bg-slate-950/20 border border-dashed border-white/5 p-6 sm:p-8 rounded backdrop-blur-sm opacity-50 flex flex-col h-full select-none">
               <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-slate-900 border border-white/5 flex items-center justify-center text-slate-600">
