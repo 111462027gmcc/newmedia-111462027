@@ -40,6 +40,8 @@ export default function GalleryPage() {
                 controls 
                 muted 
                 playsInline
+                autoPlay   /* 👈 新增：自動播放 */
+                loop       /* 👈 新增：循環播放 */
                 className="w-full h-full object-contain"
               >
                 您的瀏覽器不支援影片播放。
@@ -69,6 +71,8 @@ export default function GalleryPage() {
                 controls 
                 muted 
                 playsInline
+                autoPlay   /* 👈 新增：自動播放 */
+                loop       /* 👈 新增：循環播放 */
                 className="w-full h-full object-contain"
               >
                 您的瀏覽器不支援影片播放。
@@ -98,6 +102,8 @@ export default function GalleryPage() {
                 controls 
                 muted 
                 playsInline
+                autoPlay   /* 👈 新增：自動播放 */
+                loop       /* 👈 新增：循環播放 */
                 className="w-full h-full object-contain"
               >
                 您的瀏覽器不支援影片播放。
