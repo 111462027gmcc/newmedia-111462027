@@ -11,7 +11,7 @@ const myImages = [
         id: 1, 
         src: '/111462027-周明蝶-看海的夢境 (人類視角).jpg', 
         alt: '看海的夢境 (人類視角)', 
-        title: '夢裡的海', 
+        title: 'Sea Of Dreams', 
         date: '2025 / 10 / 17',
         description: '靈感來源於過去所做的一場夢，我特別迷戀那時的月光和海，真希望還能再回去看看。'
     },
@@ -19,7 +19,7 @@ const myImages = [
     id: 2, 
     src: '/111462027-周明蝶-平行時空 (人類視角).jpg', 
     alt: '平行時空 (人類視角)', 
-    title: '平行時空', 
+    title: 'Parallel universe', 
     date: '2025 / 10 / 28',
     description: '宇宙搞不好只是一件高維度所做出來的全息投影作品，平行時空其實就是投影畫面被分割後的結果。'
   },
@@ -71,7 +71,7 @@ export default function GalleryPage() {
             VISUAL_ARCHIVE // 影像總庫
           </div>
           <h1 className="font-mono text-2xl sm:text-4xl font-black tracking-wider text-white uppercase">
-             Visual Capture - <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]">影像作品合輯</span>
+             Image Gallery<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]"> // 影像作品合輯</span>
           </h1>
           <p className="text-xs sm:text-sm text-[#8a99ad] max-w-2xl mt-4 leading-relaxed tracking-wide">
             此處解鎖並完整載入所有數位創作與視覺解構實驗，點擊各個節點可查看像素特徵與光影維度。
