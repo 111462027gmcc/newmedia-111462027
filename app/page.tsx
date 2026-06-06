@@ -524,7 +524,7 @@ export default function Home() {
                 <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-purple-950/20 border border-[#ff007f]/20 flex items-center justify-center text-[#ff007f] group-hover:scale-110 transition-transform">
                   <Atom className="w-5 h-5 sm:w-6 sm:h-6 animate-spin-slow" />
                 </div>
-                <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">Private Collection ( Unlocked )</h3>
+                <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">Private Collection ( unlocked )</h3>
                 <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
                   憑證安全校驗通過。核心圖形庫已成功加載，歡迎進入查看個人數位作品、原創概念藝術設計與視覺實驗。
                 </p>

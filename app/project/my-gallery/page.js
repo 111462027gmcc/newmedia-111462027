@@ -27,7 +27,23 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-[#050508] text-[#e2e8f0] py-20 px-4">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-10 font-mono tracking-wider text-white">我的私密藝廊</h1>
+         
+          <header className="mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900/60 border border-white/5 font-mono text-[10px] tracking-[3px] text-[#00f3ff] uppercase mb-4">
+            
+            PERSONAL_ART // 私人作品
+          </div>
+          <h1 className="font-mono text-2xl sm:text-4xl font-black tracking-wider text-white normal-case">
+          Private Collection _
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]">
+            {" "}
+            私人收藏
+          </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-[#8a99ad] max-w-2xl mt-4 leading-relaxed tracking-wide">
+            此處解鎖並完整載入所有數位創作與視覺解構實驗，點擊各個節點可查看像素特徵與光影維度。
+          </p>
+        </header>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
@@ -50,7 +66,7 @@ export default function GalleryPage() {
             {/* 文字介紹區塊 */}
             <div className="p-6 flex-1 flex flex-col justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white mb-2 tracking-wide">人類檔案</h2>
+                <h2 className="text-xl font-bold text-white mb-2 tracking-wide">Homosapien</h2>
                 <p className="text-sm text-[#94a3b8] leading-relaxed">
                   我駭入了上帝的電腦，並且發現了一個名叫 Homosapien 的檔案，裡面居然寫滿了關於我的角色初始設定 ...
                 </p>
@@ -81,7 +97,7 @@ export default function GalleryPage() {
             {/* 文字介紹區塊 */}
             <div className="p-6 flex-1 flex flex-col justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white mb-2 tracking-wide">d2s1 - Unwanted // FMV 創作</h2>
+                <h2 className="text-xl font-bold text-white mb-2 tracking-wide">d2s1 - Unwanted | FMV </h2>
                 <p className="text-sm text-[#94a3b8] leading-relaxed">
                   這是一部由粉絲所創作的非官方音樂 MV。
                 </p>
@@ -92,11 +108,6 @@ export default function GalleryPage() {
               </div>
             </div>
           </div>
-
-          
-
-          
-
 
         </div>
       </div>

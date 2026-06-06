@@ -19,7 +19,7 @@ const myImages = [
     id: 2, 
     src: '/111462027-周明蝶-平行時空 (人類視角).jpg', 
     alt: '平行時空 (人類視角)', 
-    title: 'Parallel universe', 
+    title: 'Parallel Universe', 
     date: '2025 / 10 / 28',
     description: '宇宙搞不好只是一件高維度所做出來的全息投影作品，平行時空其實就是投影畫面被分割後的結果。'
   },
@@ -70,8 +70,12 @@ export default function GalleryPage() {
             
             VISUAL_ARCHIVE // 影像總庫
           </div>
-          <h1 className="font-mono text-2xl sm:text-4xl font-black tracking-wider text-white uppercase">
-             Image Gallery<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]"> // 影像作品合輯</span>
+          <h1 className="font-mono text-2xl sm:text-4xl font-black tracking-wider text-white normal-case">
+          Image Gallery _
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f3ff] to-[#ff007f]">
+            {" "}
+            影像合輯
+          </span>
           </h1>
           <p className="text-xs sm:text-sm text-[#8a99ad] max-w-2xl mt-4 leading-relaxed tracking-wide">
             此處解鎖並完整載入所有數位創作與視覺解構實驗，點擊各個節點可查看像素特徵與光影維度。
