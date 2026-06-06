@@ -400,7 +400,7 @@ export default function Home() {
 
           {/* 專案二：生命長廊 */}
           <Link 
-            href="/周明蝶_生命長廊.mp4" 
+            href="/程式設計與應用_周明蝶_期末作品 (3).mp4" 
             target="_blank" 
             rel="noopener noreferrer"
             className="block h-full"
@@ -420,7 +420,7 @@ export default function Home() {
                 </div>
                 
                 <video
-                  src="/周明蝶_生命長廊.mp4"
+                  src="/程式設計與應用_周明蝶_期末作品 (3).mp4"
                   autoPlay
                   loop
                   muted
