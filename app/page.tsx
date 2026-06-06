@@ -398,6 +398,52 @@ export default function Home() {
             </div>
           </Link>
 
+          {/* 專案二：生命長廊 */}
+          <Link 
+            href="/周明蝶_生命長廊.mp4" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block h-full"
+          > 
+            <div
+              ref={cardRefs[0]}
+              onMouseMove={(e) => handleCardMouseMove(e, 0)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
+                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
+            >
+              <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
+                <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30 animate-pulse">
+                  LIVE_STREAM // P5.JS & FIREBASE
+                </div>
+                
+                <video
+                  src="/周明蝶_生命長廊.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 filter contrast-[110%]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
+              </div>
+
+              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
+                p5.js & Firebase - Life Corridor
+              </h3>
+              <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
+                生命好似一條黑色的長廊，或許人們都被困在這場無止盡的輪迴當中。
+              </p>
+              {/* 可選：底部加上年份或媒材標籤 */}
+              <div className="mt-4 pt-2 border-t border-gray-800 text-xs text-[#ff007f]/70 font-mono">
+                2026 / 05 / 27 / 04'15"
+              </div>
+
+            </div>
+          </Link>
+
           {/* ✨ 新增專案：影像/圖片作品展示卡片 ✨ */}
           <Link 
             href="/gallery" // 👈 這裡修改成你要跳轉的內部路由路徑

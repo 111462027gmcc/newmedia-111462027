@@ -93,36 +93,7 @@ export default function GalleryPage() {
             </div>
           </div>
 
-          {/* ─── 作品 2 ─── */}
-          <div className="rounded-lg overflow-hidden shadow-lg border border-[#ff007f]/30 bg-[#0d0d12] flex flex-col">
-            {/* 影片區塊 */}
-            <div className="bg-black flex items-center justify-center aspect-video">
-              <video 
-                src="/周明蝶_生命長廊.mp4" 
-                controls 
-                muted 
-                playsInline
-                autoPlay   /* 👈 新增：自動播放 */
-                loop       /* 👈 新增：循環播放 */
-                className="w-full h-full object-contain"
-              >
-                您的瀏覽器不支援影片播放。
-              </video>
-            </div>
-            {/* 文字介紹區塊 */}
-            <div className="p-6 flex-1 flex flex-col justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-white mb-2 tracking-wide">生命長廊</h2>
-                <p className="text-sm text-[#94a3b8] leading-relaxed">
-                  生命好似一條黑色的長廊，或許人們都被困在這場無止盡的輪迴當中。
-                </p>
-              </div>
-              {/* 可選：底部加上年份或媒材標籤 */}
-              <div className="mt-4 pt-4 border-t border-gray-800 text-xs text-[#ff007f]/70 font-mono">
-                2026 / 05 / 27 / 04'15"
-              </div>
-            </div>
-          </div>
+          
 
           
 
