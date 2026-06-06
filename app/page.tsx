@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import Image from 'next/image';
 import Link from 'next/link';
-import { Cpu, Atom, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Cpu, Atom, ShieldAlert, ArrowRight, ImageIcon } from 'lucide-react'; // 引入 ImageIcon
 
 interface Particle {
   x: number;
@@ -30,11 +30,40 @@ export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [cursorBlurPos, setCursorBlurPos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  
+    // 1. 定義圖片作品的數據結構與內容
+  const photographyWorks = [
+    {
+      id: 1,
+      src: "/111462027-周明蝶-平行時空 (人類視角).jpg",
+      title: "平行時空 (人類視角)",
+      desc: "探索人類視覺在多維空間中的交錯與重疊，透過光影的扭曲定格數位維度中的瞬間感知。",
+      date: "2025.11"
+    },
+    {
+      id: 2,
+      src: "/path-to-your-image-2.jpg", // 🌟 請替換成你的第二張作品路徑
+      title: "量子共振 / QUANTUM_RESONANCE",
+      desc: "數位幾何圖形與環境光線的粒子感應實驗，捕捉不可見的網絡信號波動。",
+      date: "2026.02"
+    },
+    {
+      id: 3,
+      src: "/path-to-your-image-3.jpg", // 🌟 請替換成你的第三張作品路徑
+      title: "賽博邊界 / CYBER_HORIZON",
+      desc: "霓虹像素在低對比度環境下的衰減狀態研究，呈現虛擬與現實交界的冷冽感。",
+      date: "2026.05"
+    }
+  ];
 
-  // 動態矩陣卡片張數
+  // 2. 宣告彈窗控制狀態
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
+  // 動態矩陣卡片張數 (原本 2 張改為 3 張)
   const cardRefs = [
     useRef<HTMLDivElement | null>(null),
     useRef<HTMLDivElement | null>(null),
+    useRef<HTMLDivElement | null>(null), // 為新增的圖片卡片準備的 Ref
   ];
 
   // --- 3. 全域動態物理系統 (Canvas 粒子 + 滑鼠追蹤) ---
@@ -256,7 +285,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* D. 主視覺 Section (已拔除 QUANTUM AURA 航線) */}
+      {/* D. 主視覺 Section */}
       <header className="max-w-6xl mx-auto min-h-screen pt-28 pb-12 px-4 sm:px-6 md:px-12 grid md:grid-cols-12 gap-8 md:grid-flow-row items-center relative z-20">
         <div className="md:col-span-7 text-center md:text-left space-y-6 md:space-y-8 order-2 md:order-1">
           
@@ -291,7 +320,7 @@ export default function Home() {
         {/* 右側：不對稱科技線條幾何頭像 */}
         <div className="md:col-span-5 flex justify-center relative order-1 md:order-2 pt-4 md:pt-0">
           <div className="relative w-[200px] h-[200px] sm:w-[260px] sm:h-[260px] md:w-[320px] md:h-[320px] group">
-            <div className="absolute -inset-2.5 md:-inset-3 border border-white/5 pointer-events-none group-hover:border-[#00f3ff]/20 transition-colors duration-500" />
+            <div className="absolute -inset-2.5 md:-inset-3 border border border-white/5 pointer-events-none group-hover:border-[#00f3ff]/20 transition-colors duration-500" />
             <div className="absolute -top-2.5 -left-2.5 md:-top-3 md:-left-3 w-3 h-3 md:w-4 md:h-4 border-t-2 border-l-2 border-[#00f3ff]" />
             <div className="absolute -bottom-2.5 -right-2.5 md:-bottom-3 md:-right-3 w-3 h-3 md:w-4 md:h-4 border-b-2 border-r-2 border-[#ff007f]" />
             
@@ -319,60 +348,103 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-        {/* 專案一：3D 動畫作品影片 (點擊直開新分頁) */}
-        <Link 
-          href="/周明蝶_基礎動畫_期末作品.mp4" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="block h-full"
-        > 
-          <div
-            ref={cardRefs[0]}
-            onMouseMove={(e) => handleCardMouseMove(e, 0)}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
-              hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
-              before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
-          >
-            {/* 影片容器 */}
-            <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
-              <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30 animate-pulse">
-                LIVE_STREAM // 3D_RENDER
+        {/* 調整為 grid-cols-1 md:grid-cols-2 或 3 的彈性排版，讓多個卡片完美並排 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          
+          {/* 專案一：3D 動畫作品影片 */}
+          <Link 
+            href="/周明蝶_基礎動畫_期末作品.mp4" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block h-full"
+          > 
+            <div
+              ref={cardRefs[0]}
+              onMouseMove={(e) => handleCardMouseMove(e, 0)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
+                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
+            >
+              <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
+                <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30 animate-pulse">
+                  LIVE_STREAM // 3D_RENDER
+                </div>
+                
+                <video
+                  src="/周明蝶_基礎動畫_期末作品.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 filter contrast-[110%]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
               </div>
-              
-              <video
-                src="/周明蝶_基礎動畫_期末作品.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 filter contrast-[110%]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
-            </div>
 
-            {/* 文字與標籤區 */}
-            <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
-              Blue Dream
-            </h3>
-            <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
-              我進入了一場藍色的夢，周圍充滿了流動的光影和模糊的輪廓。我試圖透過動畫捕捉那種虛幻又真實的感覺。
-            </p>
-            
-            <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
-              LAUNCH_FULLSCREEN <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
+                3D Animation - Blue Dream
+              </h3>
+              <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
+                我進入了一場藍色的夢，周圍充滿了流動的光影和模糊的輪廓。我試圖透過動畫捕捉那種虛幻又真實的感覺。
+              </p>
+              
+              <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
+                LAUNCH_FULLSCREEN <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+              </div>
             </div>
-          </div>
-        </Link>
-          {/* 專案二：繪畫收藏區 */}
+          </Link>
+
+          {/* ✨ 新增專案：影像/圖片作品展示卡片 ✨ */}
+          <Link 
+            href="/project/my-photography" // 這裡替換成你想跳轉的圖片作品集路徑
+            className="block h-full"
+          >
+            <div
+              ref={cardRefs[1]} // 使用第二個 Ref 的位置
+              onMouseMove={(e) => handleCardMouseMove(e, 1)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="relative bg-[rgba(255,255,255,0.01)] border border-white/5 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
+                hover:-translate-y-1.5 hover:border-[#00f3ff] hover:shadow-[0_10px_30px_rgba(0,243,255,0.08)]
+                before:absolute before:inset-0 before:z-[-1] before:bg-[radial-gradient(500px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(0,243,255,0.05),transparent_40%)] flex flex-col h-full cursor-pointer"
+            >
+              {/* 圖片預覽容器 */}
+              <div className="relative w-full aspect-video mb-6 overflow-hidden rounded border border-white/10 group-hover:border-[#00f3ff]/40 transition-colors duration-500 bg-slate-950">
+                <div className="absolute top-2 left-2 z-20 font-mono text-[9px] tracking-widest text-[#00f3ff] bg-[#050508]/80 px-1.5 py-0.5 border border-[#00f3ff]/30">
+                  STATIC_CAPTURE // IMAGE_FRAME
+                </div>
+                
+                {/* 預覽封面圖 (請替換為你的作品代表圖路徑，例如 /my-art.jpg) */}
+                <Image 
+                  src="/111462027-周明蝶-平行時空 (人類視角).jpg" 
+                  alt="影像作品預覽"
+                  fill
+                  className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 z-10 pointer-events-none" />
+              </div>
+
+              <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
+                Visual Capture - 影像作品合輯
+              </h3>
+              <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
+                此處收錄了平面攝影、數位影像創作與視覺解構實驗。透過快門與光影像素，定格數位維度中的瞬間感知。
+              </p>
+              
+              <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
+                VIEW_GALLERY <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+              </div>
+            </div>
+          </Link>
+
+          {/* 專案三：作品收藏區 (原 Ref[1] 順延為 Ref[2]) */}
           {canAccessArt ? (
             <Link href="/project/my-gallery" className="block h-full"> 
-              {/* 💡 加上 className="block h-full" 確保整張卡片都能被點擊，且 Link 能夠正確綁定 */}
               <div
-                ref={cardRefs[1]}
-                onMouseMove={(e) => handleCardMouseMove(e, 1)}
+                ref={cardRefs[2]}
+                onMouseMove={(e) => handleCardMouseMove(e, 2)}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 className="relative bg-[rgba(255,255,255,0.01)] border border-[#ff007f]/30 p-6 sm:p-8 rounded backdrop-blur-md overflow-hidden group transition-all duration-300
@@ -382,9 +454,9 @@ export default function Home() {
                 <div className="mb-4 sm:mb-6 w-11 h-11 sm:w-12 sm:h-12 rounded bg-purple-950/20 border border-[#ff007f]/20 flex items-center justify-center text-[#ff007f] group-hover:scale-110 transition-transform">
                   <Atom className="w-5 h-5 sm:w-6 sm:h-6 animate-spin-slow" />
                 </div>
-                <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">我的繪畫收藏 ( 已解鎖 )</h3>
+                <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">我的作品收藏 ( 已解鎖 )</h3>
                 <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
-                  憑證安全校驗通過。核心圖形庫已成功加載，歡迎進入查看個人數位電繪、原創概念藝術設計與視覺實驗。
+                  憑證安全校驗通過。核心圖形庫已成功加載，歡迎進入查看個人數位作品、原創概念藝術設計與視覺實驗。
                 </p>
                 <div className="text-[#ff007f] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
                   ACCESS_GRANTED // OPEN_CORE <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
