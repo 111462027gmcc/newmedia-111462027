@@ -386,9 +386,15 @@ export default function Home() {
               <h3 className="font-mono text-base sm:text-lg font-bold mb-2.5 sm:mb-3 tracking-wider text-white">
                 3D Animation - Blue Dream
               </h3>
+              
               <p className="text-[#8a99ad] leading-relaxed text-xs sm:text-sm font-light flex-grow">
-                我進入了一場藍色的夢，周圍充滿了流動的光影和模糊的輪廓。我試圖透過動畫捕捉那種虛幻又真實的感覺。
+                好似進入了一場藍色的夢，周圍充滿了流動的光影和模糊的輪廓，我試圖透過動畫捕捉那種虛幻又真實的感覺。
               </p>
+
+              {/* 可選：底部加上年份或媒材標籤 */}
+              <div className="mt-4 pt-4 border-t border-gray-800 text-xs text-[#ff007f]/70 font-mono">
+                2026 / 05 / 06 / 08'06"
+              </div>
               
               <div className="text-[#00f3ff] text-[11px] font-mono tracking-widest mt-6 flex items-center gap-1.5">
                 LAUNCH_FULLSCREEN <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
